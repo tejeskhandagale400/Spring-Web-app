@@ -45,9 +45,9 @@ public class MMBankappValidation {
 		SavingsAccount account = (SavingsAccount) parametrs[0];
 
 		if ((Double) parametrs[1] > 0 && account.getBankAccount().getAccountBalance() >= (Double) parametrs[1]) {
- 				//logger.info("inside withdraw");
+ 				logger.info("inside withdraw");
 				joinPoint.proceed();
- 				//logger.info("Invalid Input or Insufficient Funds!");
+				logger.info("Withdraw Successful");
 			 
 		}
 
@@ -67,10 +67,10 @@ public class MMBankappValidation {
 		SavingsAccount senderAccount = (SavingsAccount) parametrs[0];
 		SavingsAccount recieverAccount = (SavingsAccount) parametrs[1];
 		double amount = (Double)parametrs[2];
-		if (amount > 0 && senderAccount.getBankAccount().getAccountBalance() >= amount) {
-	 		logger.info("inside withdraw");
+		if (amount > 0 && senderAccount.getBankAccount().getAccountBalance() >= amount ) {
+	 		logger.info("inside Transfer");
 			joinPoint.proceed();
-				logger.info("Invalid Input or Insufficient Funds!");
+				logger.info("Transfer Successful");
 		 
 	}
 		else {

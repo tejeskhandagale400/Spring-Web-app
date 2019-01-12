@@ -55,11 +55,8 @@ public class SavingsAccountServiceImpl implements SavingsAccountService {
 	@Transactional
 	public void withdraw(SavingsAccount account, double amount) {
 		double currentBalance = account.getBankAccount().getAccountBalance();
-		if (currentBalance >= amount) {
-			currentBalance -= amount;
 			savingsAccountDAO.updateBalance(account.getBankAccount().getAccountNumber(), currentBalance);
-		} else
-			throw new InsufficientFundsException("Insufficient Funds!");
+		 
 	}
 
 	@Transactional
