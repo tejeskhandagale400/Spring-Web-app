@@ -17,6 +17,12 @@ public class CurrentAccount {
 		bankAccount = new BankAccount(accountNumber, accountHolderName, accountBalance);
 		this.odLimit = odLimit;
 	}
+	public CurrentAccount(int accountNumber, String accountHolderName, double accountBalance, double odLimit, String type) {
+		bankAccount = new BankAccount(accountNumber, accountBalance, accountHolderName, type);
+		this.odLimit = odLimit;
+
+ 	}
+	
 	public double getOdLimit() {
 		return odLimit;
 	}
@@ -33,6 +39,9 @@ public class CurrentAccount {
 		this.bankAccount = bankAccount;
 	}
 
+	public int getTypeOfAccount() {
+		return 2;
+	}
 	@Override
 	public String toString() {
 		return "CurrentAccount [salary=" + odLimit + "," + bankAccount + "\n";

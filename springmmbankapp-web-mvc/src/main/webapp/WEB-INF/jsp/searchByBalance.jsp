@@ -14,8 +14,8 @@
 		<br /> <input type="submit" value="Submit">
 
 	</form>
-	<%-- <div>
+	  <div>
 		<jsp:include page="homeLink.html"></jsp:include>
-	</div> --%>
+	</div> 
 </body>
 </html>

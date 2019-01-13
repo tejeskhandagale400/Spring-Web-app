@@ -8,5 +8,8 @@
 </head>
 <body>
 Amount withdraw is  Successful..
+ <div>
+		<jsp:include page="homeLink.html"></jsp:include>
+	</div>
 </body>
 </html>

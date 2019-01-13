@@ -3,7 +3,6 @@ package com.capgemini.mmbank.account;
 public class SavingsAccount {
 	private boolean salary;
 	private BankAccount bankAccount;
-
 	public SavingsAccount(String accountHolderName, double accountBalance, boolean salary) {
 		bankAccount = new BankAccount(accountHolderName, accountBalance);
 		this.salary = salary;
@@ -19,6 +18,11 @@ public class SavingsAccount {
 		this.salary = salary;
 	}
 
+	public SavingsAccount(int accountNumber, String accountHolderName, double accountBalance,boolean salary, String type) {
+		bankAccount = new BankAccount(accountNumber, accountBalance, accountHolderName, type);
+		this.salary = salary;
+
+ 	}
 	public boolean isSalary() {
 		return salary;
 	}
@@ -35,6 +39,9 @@ public class SavingsAccount {
 		this.bankAccount = bankAccount;
 	}
 
+	public int getTypeOfAccount() {
+		return 1;
+	}
 	@Override
 	public String toString() {
 		return "SavingsAccount [salary=" + salary + "," + bankAccount + "\n";

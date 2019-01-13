@@ -11,8 +11,8 @@
 	  <input type = "submit" value="submit"> 	&nbsp &nbsp&nbsp<input type = "reset" value="reset"> <br>
 		
 	</form>
-	<%-- <div>
+	  <div>
 		<jsp:include page="homeLink.html"></jsp:include>
-	</div> --%>
+	</div>  
 </body>
 </html>

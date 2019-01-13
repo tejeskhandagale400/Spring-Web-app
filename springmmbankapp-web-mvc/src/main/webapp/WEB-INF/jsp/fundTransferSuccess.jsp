@@ -8,5 +8,8 @@
 </head>
 <body>
 Amount Transfer Successul.
+ <div>
+		<jsp:include page="homeLink.html"></jsp:include>
+	</div>
 </body>
 </html>

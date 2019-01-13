@@ -49,9 +49,9 @@
 			</form>
 		
 	
-	<%-- <div>
+ 	 <div>
 		<jsp:include page="homeLink.html"></jsp:include>
-	</div> --%>
+	</div> 
 </body>
 </html>
 

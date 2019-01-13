@@ -41,7 +41,6 @@ public class SavingAccountSJDAOImpl implements SavingsAccountDAO {
 	@Override
 	public boolean deleteAccount(int accountNumber) throws AccountNotFoundException {
 		tempaTemplate.update("DELETE From account  WHERE account_number = ?", accountNumber);
-
 		return true;
 	}
 

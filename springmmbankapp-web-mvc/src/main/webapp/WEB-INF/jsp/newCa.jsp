@@ -6,12 +6,11 @@
 <title>Insert title here</title>
 </head>
  <body>
- <form action ="addSa">
+ <form action ="addCa">
   
 	Enter Name :&nbsp &nbsp<input type = "text" name="accountHolderName" > <br><br>
 	Enter Balance :&nbsp<input type = "number" name="accountBalance"> <br><br>
-	Salary :<input type = radio name="rdSalary" value = "true"> True  &nbsp 
-	<input type = radio name="rdSalary" value = "false">False <br><br>
+	Overdraft Limit:<input type = "number" name="odLmit"><br><br>
 	<input type = "submit" value="submit"> 	&nbsp &nbsp&nbsp<input type = "reset" value="reset"> <br>
 		
 	</form>

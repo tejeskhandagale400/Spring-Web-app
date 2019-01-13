@@ -11,8 +11,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.capgemini.mmbank.account.CurrentAccount;
 import com.capgemini.mmbank.account.SavingsAccount;
 import com.capgemini.mmbank.exception.AccountNotFoundException;
+import com.capgemini.mmbank.service.CurrentAccountService;
 import com.capgemini.mmbank.service.SavingsAccountService;
 
 @Controller
@@ -23,19 +25,14 @@ public class AccountController {
 	@Autowired
 	private SavingsAccountService savingsAccountService;
 
+	@Autowired
+	private CurrentAccountService  currentAccountService;
+	
 	@RequestMapping("/home")
 	public String askDetails() {
 		return "index";
 	}
 
-	/*
-	 * @RequestMapping("/save") public String save(@RequestParam("empId") int
-	 * empId, @RequestParam("empName") String empName,
-	 * 
-	 * @RequestParam("salary") double salary , Model model) { Employee employee =
-	 * new Employee(empId , empName , salary); model.addAttribute("employee",
-	 * employee); return "display"; }
-	 */
 
 	@RequestMapping("/getAll")
 	public String getAllAccount(Model model) {
@@ -45,13 +42,13 @@ public class AccountController {
 		return "getAllAccounts";
 	}
 
-	@RequestMapping("/addAccount")
-	public String createAccount() {
+	@RequestMapping("/addSaAccount")
+	public String createSavingAccount() {
 		return "newSa";
 	}
 
 	@RequestMapping("/addSa")
-	public String createSavingAccount(@RequestParam("name") String accountHolderName,
+	public String createSavingAccount(@RequestParam("accountHolderName") String accountHolderName,
 			@RequestParam("accountBalance") double accountBalance, @RequestParam("rdSalary") String sal, Model model) {
 		boolean salary = sal.equalsIgnoreCase("true") ? true : false;
 		SavingsAccount savingAccount = savingsAccountService.createNewAccount(accountHolderName, accountBalance,
@@ -60,6 +57,20 @@ public class AccountController {
 		return "redirect:getAll";
 	}
 
+
+	@RequestMapping("/addCaAccount")
+	public String createCurrentAccount() {
+		return "newCa";
+	}
+	
+	@RequestMapping("/addCa")
+	public String createCurrentAccount(@RequestParam("accountHolderName") String accountHolderName,
+			@RequestParam("accountBalance") double accountBalance, @RequestParam("odLmit") double odLimit, Model model) throws AccountNotFoundException {
+		CurrentAccount currentAccount = currentAccountService.createNewAccount(accountHolderName, accountBalance,odLimit);
+		model.addAttribute("account", currentAccount);
+ 		return "getAllAccounts";
+	}
+	
 	@RequestMapping("/searchForm")
 	public String searchAccount() {
 		return "searchBy";
@@ -71,11 +82,17 @@ public class AccountController {
 	}
 
 	@RequestMapping("/searchAccount")
-	public String getAccountByNumber(@RequestParam("txtAccountNumber") int accountNumber, Model model)
-			throws AccountNotFoundException {
-		SavingsAccount savingsAccount = savingsAccountService.getAccountById(accountNumber);
-		model.addAttribute("account", savingsAccount);
-		return "getAllAccounts";
+	public String getAccountByNumber(@RequestParam("txtAccountNumber") int accountNumber, Model model) {
+		SavingsAccount savingsAccount;
+		try {
+			savingsAccount = savingsAccountService.getAccountById(accountNumber);
+			model.addAttribute("account", savingsAccount);
+			System.out.println("in try");
+			return "getAllAccounts";
+		} catch (Exception e) {
+			return "wrongAccountnumber";
+		}
+
 	}
 
 	@RequestMapping("/searchByName")
@@ -98,7 +115,7 @@ public class AccountController {
 
 	@RequestMapping("/searchAccountByBalRange")
 	public String getAccountByBalRange(@RequestParam("miniBalance") double miniBalance,
-			@RequestParam("maxBalance") double maxBalance, Model model) throws AccountNotFoundException {
+			@RequestParam("maxBalance") double maxBalance, Model model) {
 		List<SavingsAccount> savingsAccount = savingsAccountService.getAccountByBalRange(miniBalance, maxBalance);
 		System.out.println(savingsAccount);
 		model.addAttribute("accounts", savingsAccount);
@@ -111,11 +128,16 @@ public class AccountController {
 	}
 
 	@RequestMapping("/update")
-	public String update(@RequestParam("txtAccountNumber") int accountNumber, Model model)
-			throws AccountNotFoundException {
-		SavingsAccount savingsAccount = savingsAccountService.getAccountById(accountNumber);
-		model.addAttribute("account", savingsAccount);
-		return "updateDetails";
+	public String update(@RequestParam("txtAccountNumber") int accountNumber, Model model) {
+		SavingsAccount savingsAccount;
+		try {
+			savingsAccount = savingsAccountService.getAccountById(accountNumber);
+			model.addAttribute("account", savingsAccount);
+			return "updateDetails";
+		} catch (Exception e) {
+			return "wrongAccountnumber";
+		}
+
 	}
 
 	@RequestMapping("/updateInDB")
@@ -123,14 +145,15 @@ public class AccountController {
 			@RequestParam("accountHolderName") String accountHolderName,
 			@RequestParam("accountBalance") double accountBalance, @RequestParam("salary") String sal, Model model)
 			throws AccountNotFoundException {
-
 		boolean salary = sal.equalsIgnoreCase("salaryTrue") ? true : false;
-		SavingsAccount savingsAccount = savingsAccountService.getAccountById(accountNumber);
+		SavingsAccount savingsAccount;
+		savingsAccount = savingsAccountService.getAccountById(accountNumber);
 		savingsAccount.getBankAccount().setAccountHolderName(accountHolderName);
 		savingsAccount.setSalary(salary);
 		savingsAccount = savingsAccountService.updateAccountInfo(savingsAccount);
 		model.addAttribute("account", savingsAccount);
 		return "getAllAccounts";
+
 	}
 
 	@RequestMapping("/closeAccount")
@@ -139,9 +162,20 @@ public class AccountController {
 	}
 
 	@RequestMapping("/closeAccDb")
-	public String closeAccDb(@RequestParam("accountNumber") int accountNumber) throws AccountNotFoundException {
-		savingsAccountService.deleteAccount(accountNumber);
-		return "closeSuccess";
+	public String closeAccDb(@RequestParam("accountNumber") int accountNumber)  {
+		try {
+			SavingsAccount savingsAccount = savingsAccountService.getAccountById(accountNumber);
+		} catch (Exception e1) {
+			return "wrongAccountnumber";
+ 		}try {
+			
+			savingsAccountService.deleteAccount(accountNumber);
+			return "closeSuccess";
+		} catch ( Exception e) {
+			return "CloseAccount";
+		}
+		
+
 	}
 
 	@RequestMapping("/depositeAmount")
@@ -150,11 +184,16 @@ public class AccountController {
 	}
 
 	@RequestMapping("/deposite")
-	public String depositeDb(@RequestParam("accountNumber") int accountNumber, @RequestParam("amount") double amount)
-			throws AccountNotFoundException {
-		SavingsAccount savingsAccount = savingsAccountService.getAccountById(accountNumber);
-		savingsAccountService.deposit(savingsAccount, amount);
-		return "depositeSuccess";
+	public String depositeDb(@RequestParam("accountNumber") int accountNumber, @RequestParam("amount") double amount) {
+		SavingsAccount savingsAccount;
+		try {
+			savingsAccount = savingsAccountService.getAccountById(accountNumber);
+			savingsAccountService.deposit(savingsAccount, amount);
+			return "depositeSuccess";
+		} catch (Exception e) {
+			return "wrongAccountnumber";
+		}
+
 	}
 
 	@RequestMapping("/withdrawAmount")
@@ -163,11 +202,16 @@ public class AccountController {
 	}
 
 	@RequestMapping("/withdraw")
-	public String withdrawDb(@RequestParam("accountNumber") int accountNumber, @RequestParam("amount") double amount)
-			throws AccountNotFoundException {
-		SavingsAccount savingsAccount = savingsAccountService.getAccountById(accountNumber);
-		savingsAccountService.withdraw(savingsAccount, amount);
-		return "withdrawSuccess";
+	public String withdrawDb(@RequestParam("accountNumber") int accountNumber, @RequestParam("amount") double amount) {
+		SavingsAccount savingsAccount;
+		try {
+			savingsAccount = savingsAccountService.getAccountById(accountNumber);
+			savingsAccountService.withdraw(savingsAccount, amount);
+			return "withdrawSuccess";
+		} catch (Exception e) {
+			return "wrongAccountnumber";
+		}
+
 	}
 
 	@RequestMapping("/fundTransfer")
@@ -177,12 +221,17 @@ public class AccountController {
 
 	@RequestMapping("/fundTransferDB")
 	public String fundTransferDb(@RequestParam("senderAccountNumber") int senderAccountNumber,
-			@RequestParam("recieverAccountNumber") int recieverAccountNumber, @RequestParam("amount") double amount)
-			throws AccountNotFoundException {
-		SavingsAccount sender = savingsAccountService.getAccountById(senderAccountNumber);
-		SavingsAccount receiver = savingsAccountService.getAccountById(recieverAccountNumber);
-		savingsAccountService.fundTransfer(sender, receiver, amount);
-		return "fundTransferSuccess";
+			@RequestParam("recieverAccountNumber") int recieverAccountNumber, @RequestParam("amount") double amount) {
+		SavingsAccount receiver;
+		try {
+			SavingsAccount sender = savingsAccountService.getAccountById(senderAccountNumber);
+			receiver = savingsAccountService.getAccountById(recieverAccountNumber);
+			savingsAccountService.fundTransfer(sender, receiver, amount);
+			return "fundTransferSuccess";
+		} catch (Exception e) {
+			return "wrongAccountnumber";
+		}
+
 	}
 
 	@RequestMapping("/sortByName")
@@ -204,23 +253,94 @@ public class AccountController {
 
 	}
 
-	/*
-	 * @RequestMapping("/sortByAccNo") public String sortByAccNo(Model model) { sort
-	 * = !sort; System.out.println(sort); int result = sort ? 1 : -1; try {
-	 * ArrayList<SavingsAccount> inputAccountList = (ArrayList<SavingsAccount>)
-	 * savingsAccountService .getAllSavingsAccount();
-	 * Collections.sort(inputAccountList, new Comparator<SavingsAccount>() {
-	 * 
-	 * @Override public int compare(SavingsAccount accountOne, SavingsAccount
-	 * accountTwo) { if (accountOne.getBankAccount() .getAccountNumber() <
-	 * accountTwo .getBankAccount().getAccountNumber()) return -1 * result; else if
-	 * (accountOne.getBankAccount() .getAccountNumber() == accountTwo
-	 * .getBankAccount().getAccountNumber()) return 0; else return 1 * result; }
-	 * 
-	 * }); model.addAttribute("accounts", inputAccountList); return
-	 * "getAllAccounts";
-	 * 
-	 * }
-	 * 
-	 */
+	@RequestMapping("/sortByAccNo")
+	public String sortByAccNo(Model model) {
+		sort = !sort;
+		System.out.println(sort);
+
+		int result = sort ? 1 : -1;
+
+		ArrayList<SavingsAccount> inputAccountList = (ArrayList<SavingsAccount>) savingsAccountService
+				.getAllSavingsAccount();
+		Collections.sort(inputAccountList, new Comparator<SavingsAccount>() {
+
+			@Override
+			public int compare(SavingsAccount accountOne, SavingsAccount accountTwo) {
+				if (accountOne.getBankAccount().getAccountNumber() < accountTwo.getBankAccount().getAccountNumber())
+					return -1 * result;
+				else if (accountOne.getBankAccount().getAccountNumber() == accountTwo.getBankAccount()
+						.getAccountNumber())
+					return 0;
+				else
+					return 1 * result;
+			}
+		});
+		model.addAttribute("accounts", inputAccountList);
+		return "getAllAccounts";
+
+	}
+
+	@RequestMapping("/sortBySalary")
+	public String sortBySalary(Model model) {
+		sort = !sort;
+		System.out.println(sort);
+		int result = sort ? 1 : -1;
+		ArrayList<SavingsAccount> inputAccountList = (ArrayList<SavingsAccount>) savingsAccountService
+				.getAllSavingsAccount();
+		Collections.sort(inputAccountList, new Comparator<SavingsAccount>() {
+			@Override
+			public int compare(SavingsAccount accountOne, SavingsAccount accountTwo) {
+				if (accountOne.isSalary())
+					return 1 * result;
+				else
+					return -1 * result;
+			}
+
+		});
+		model.addAttribute("accounts", inputAccountList);
+		return "getAllAccounts";
+	}
+
+	@RequestMapping("/sortByAccBalance")
+	public String sortByAccBalance(Model model) {
+		sort = !sort;
+		System.out.println(sort);
+		int result = sort ? 1 : -1;
+		ArrayList<SavingsAccount> inputAccountList = (ArrayList<SavingsAccount>) savingsAccountService
+				.getAllSavingsAccount();
+		Collections.sort(inputAccountList, new Comparator<SavingsAccount>() {
+			@Override
+			public int compare(SavingsAccount accountOne, SavingsAccount accountTwo) {
+				if (accountOne.getBankAccount().getAccountBalance() < accountTwo.getBankAccount().getAccountBalance())
+					return -1 * result;
+				else if (accountOne.getBankAccount().getAccountBalance() == accountTwo.getBankAccount()
+						.getAccountBalance())
+					return 0;
+				else
+					return 1 * result;
+			}
+
+		});
+		model.addAttribute("accounts", inputAccountList);
+		return "getAllAccounts";
+	}
+
+	@RequestMapping("/currentBalance")
+	public String getCurrentBalance() {
+		return "CheckCurrentBalance";
+	}
+
+	@RequestMapping("/checkBalance")
+	public String checkBalance(@RequestParam("accountNumber") int accountNumber, Model model) {
+		SavingsAccount savingsAccount;
+		try {
+			savingsAccount = savingsAccountService.getAccountById(accountNumber);
+			double accountBalance = savingsAccount.getBankAccount().getAccountBalance();
+			model.addAttribute("accountBalance", accountBalance);
+			return "accountBalance";
+		} catch (Exception e) {
+			return "wrongAccountnumber";
+		}
+
+	}
 }

@@ -8,5 +8,8 @@
 </head>
 <body>
 Amount deposited Successful.
+ <div>
+		<jsp:include page="homeLink.html"></jsp:include>
+	</div>
 </body>
 </html>

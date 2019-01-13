@@ -320,21 +320,16 @@ public class AccountCUI {
 	}
 
 	private void createCurrentAccount(String accountHolderName, double accountBalance, double odLimit) {
-		try {
 			CurrentAccount newAccount;
-			try {
-				newAccount = currentAccountService.createNewAccount(accountHolderName, accountBalance, odLimit);
-				System.out.println("New Current Account is successfully created account details are :");
-				System.out.println(newAccount);
-			} catch (AccountNotFoundException e) {
-				e.printStackTrace();
-			}
-
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+ 				try {
+					newAccount = currentAccountService.createNewAccount(accountHolderName, accountBalance, odLimit);
+					System.out.println("New Current Account is successfully created account details are :");
+					System.out.println(newAccount);
+				} catch (AccountNotFoundException e) {
+ 					e.printStackTrace();
+				}
+			
+			 
 	}
 
 	private void createSavingsAccount(String accountHolderName, double accountBalance, boolean salary) {

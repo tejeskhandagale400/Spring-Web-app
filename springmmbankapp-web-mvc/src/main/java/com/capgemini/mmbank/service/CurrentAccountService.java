@@ -8,26 +8,26 @@ import com.capgemini.mmbank.exception.AccountNotFoundException;
 
 public interface CurrentAccountService {
 
-	CurrentAccount createNewAccount(String accountHolderName, double accountBalance, double odLimit) throws ClassNotFoundException, SQLException, AccountNotFoundException;
+	CurrentAccount createNewAccount(String accountHolderName, double accountBalance, double odLimit) throws AccountNotFoundException;
 
-	CurrentAccount getAccountById(int accountNumber) throws ClassNotFoundException, SQLException, AccountNotFoundException;
+	CurrentAccount getAccountById(int accountNumber) throws  AccountNotFoundException;
 
-	boolean deleteAccount(int accountNumber) throws ClassNotFoundException, SQLException, AccountNotFoundException;
+	boolean deleteAccount(int accountNumber) throws  AccountNotFoundException;
 	
-	List<CurrentAccount> getAllCurrentAccount() throws ClassNotFoundException, SQLException;
+	List<CurrentAccount> getAllCurrentAccount() ;
 
-	void fundTransfer(CurrentAccount sender, CurrentAccount receiver, double amount) throws ClassNotFoundException, SQLException;
-	void deposit(CurrentAccount account, double amount) throws ClassNotFoundException, SQLException;
-	void withdraw(CurrentAccount account, double amount) throws ClassNotFoundException, SQLException;
+	void fundTransfer(CurrentAccount sender, CurrentAccount receiver, double amount);
+	void deposit(CurrentAccount account, double amount);
+	void withdraw(CurrentAccount account, double amount);
 	
-	double getAccountBalance(int accountNumber) throws ClassNotFoundException, SQLException, AccountNotFoundException;
+	double getAccountBalance(int accountNumber) throws AccountNotFoundException;
 
-	CurrentAccount getAccountByName(String accountHolderName) throws ClassNotFoundException, AccountNotFoundException, SQLException;
+	CurrentAccount getAccountByName(String accountHolderName) throws   AccountNotFoundException;
 	
-	List<CurrentAccount> sortAllAccount(int option, int sortBy) throws ClassNotFoundException, SQLException ;
+	List<CurrentAccount> sortAllAccount(int option, int sortBy)  ;
 
-	CurrentAccount updateAccountInfo(CurrentAccount CurrentAccount) throws ClassNotFoundException, SQLException, AccountNotFoundException;
+	CurrentAccount updateAccountInfo(CurrentAccount CurrentAccount) throws AccountNotFoundException;
 
 	List<CurrentAccount> getAccountByBalRange(double minimumBalance,
-			double maxBalance) throws ClassNotFoundException, SQLException;
+			double maxBalance);
 }

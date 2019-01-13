@@ -1,3 +1,5 @@
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -5,13 +7,9 @@
 <title>Insert title here</title>
 </head>
 <body>
-	<form action="update">
-		Enter Account Number: <input type="number" name="txtAccountNumber" />
-		<br /> <input type="submit" value="Submit">
-
-	</form>
-	  <div>
+You entered wrong  account number.
+<div>
 		<jsp:include page="homeLink.html"></jsp:include>
-	</div> 
+	</div>
 </body>
 </html>

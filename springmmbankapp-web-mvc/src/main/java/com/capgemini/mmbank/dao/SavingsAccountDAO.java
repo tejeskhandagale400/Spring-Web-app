@@ -16,8 +16,7 @@ public interface SavingsAccountDAO {
 	double getAccountBalance(int accountNumber) throws  AccountNotFoundException;
 	SavingsAccount getAccountByName(String accountHolderName) throws AccountNotFoundException;
 	SavingsAccount updateAccountInfo(SavingsAccount savingsAccount) throws AccountNotFoundException;
-	List<SavingsAccount> getAccountByBalRange(double minimumBalance,
-			double maxBalance) ;
+	List<SavingsAccount> getAccountByBalRange(double minimumBalance, double maxBalance) ;
 	
 	
 }

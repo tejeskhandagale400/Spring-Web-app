@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
+    <%@ page isELIgnored="false"%> 
 <!DOCTYPE html>
 <html>
 <head>
@@ -7,9 +8,6 @@
 <title>Insert title here</title>
 </head>
 <body>
-Account Clossed Successful...
- <div>
-		<jsp:include page="homeLink.html"></jsp:include>
-	</div>
+Your current account balance is =${accountBalance}
 </body>
 </html>
